@@ -1,0 +1,71 @@
+﻿<Window x:Class="PostgreSQL_Excel.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PostgreSQL_Excel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Border Padding="20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0" Name="btn_show" Margin="0,10,5,10" Content="Show Database" Click="Btn_show_Click" />
+                <Button MaxWidth="200" Grid.Column="1" Margin="0 10 5 10" Content="Update selected row to Data Base"/>
+                <Button MinWidth="100" Grid.Column="2" Margin="0 10 5 10" Content="Delete selected row to Data Base"/>
+                <Button MaxWidth="200" Grid.Column="3" Margin="0 10 5 10" Content="Export to Excel"/>
+                <Button Grid.Column="4" Margin="0 10 0 10" Name="btn_add" Content="ADD to Data Base" Click="Btn_add_Click"/>
+                
+            </Grid>
+            <!--<DataGrid ItemsSource="{Binding Products}" x:Name="dataGridView1" MinColumnWidth="100" Grid.Row="1" CanUserReorderColumns="False" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" Margin="1,0,-1,0" Background="LightGray" RowBackground="LightYellow" AlternatingRowBackground="LightBlue" BorderBrush="Gray" BorderThickness="5" CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="#" Width="25" CanUserResize="False" MinWidth="25" Binding="{Binding ID}"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding ProductName}"/>
+                    <DataGridTextColumn Header="Code" Binding="{Binding ProductCode}"/>
+                    <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
+                    <DataGridTextColumn Header="Excise" Binding="{Binding Excise}"/>
+                    <DataGridTextColumn Header="Edu. Cess" Binding="{Binding EduCess}"/>
+                    <DataGridTextColumn Header="VAT" Binding="{Binding Vat}"/>
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total}"/>
+                </DataGrid.Columns>
+            </DataGrid>-->
+            <DataGrid Name="dataGridView1" Height="200" AutoGenerateColumns="True">
+                <!--<DataGrid.Columns>
+                    <DataGridTextColumn Header="Kodi" Width="40" Binding="{Binding item_code}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Artikulli" Width="100" Binding="{Binding name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Barkodi" Width="100" Binding="{Binding barcode}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Cmimi me tvsh" Width="100" Binding="{Binding price}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Cmimi pa tvsh" Width="100" Binding="{Binding price}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Njesi" Width="100" Binding="{Binding item_unit_id}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Tvsh" Width="100" Binding="{Binding tax_rate_id}"></DataGridTextColumn>
+                </DataGrid.Columns>-->
+            </DataGrid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Margin="0 10 10 10">
+                    <Button Name="btn_choose" Content="Choose" Margin="0 5" Click="Btn_choose_Click" />
+                    <TextBlock Text="Select work sheet" Margin="0 5"/>
+
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="0 10">
+                    <TextBox Name="txt_path" Margin="0 5" />
+                    <ComboBox Name="cmb_sheets" Margin="0 5"/>
+
+                </StackPanel>
+
+            </Grid>
+            <Button Name="btn_load" Content="Load File Excel" Click="Btn_load_Click"/>
+        </StackPanel>
+    </Border>
+</Window>

@@ -96,8 +96,42 @@ namespace PostgreSQL_Excel
         public MainWindow()
         {
             InitializeComponent();
+            fill_cmb_njesi();
+          
         }
-       
+        void fill_cmb_njesi()
+        {
+            DtServer = pg_Connect.connect_database();
+            string connstring = DtServer.dt_connection;
+            bool conn_True = DtServer.fileExist;
+            if (conn_True)
+            {
+                try
+                {
+                    
+                    connection = new NpgsqlConnection(connstring);
+                    connection.Open();
+                    command = new NpgsqlCommand("SELECT * from public.item_unit", connection);
+                    NpgsqlDataReader dr = command.ExecuteReader();
+                    while(dr.Read())
+                    {
+                        string name = dr.GetString(2);
+                        cmb_njesi.Items.Add(name);
+                    }
+                    connection.Close();
+                    
+                }
+                catch (Exception msg)
+                {
+                    //MessageBox.Show("You can't connect with database!Please chek data connections saved in the file and try again! " + "Server=127.0.0.1; Port=5432; User Id=postgres; Password=b2b4cc1b2; Database=DataStudent;");
+                    MessageBox.Show(msg.Message);
+
+                }
+            }
+           
+        }
+
+
         private void Btn_choose_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openfiledialog1 = new OpenFileDialog();
@@ -174,7 +208,12 @@ namespace PostgreSQL_Excel
             else { MessageBox.Show("Please choose the file and select the sheet name!"); }
         }
 
-       private void Btn_add_Click(object sender, RoutedEventArgs e)
+        //private void Cmb_tabelat_neDB_Selected(object sender, RoutedEventArgs e)
+        //{
+
+        //}
+
+        private void Btn_add_Click(object sender, RoutedEventArgs e)
         {
             DtServer = pg_Connect.connect_database();
             string connstring = DtServer.dt_connection;

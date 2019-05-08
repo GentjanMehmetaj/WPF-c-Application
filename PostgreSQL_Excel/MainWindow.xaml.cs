@@ -207,11 +207,7 @@ namespace PostgreSQL_Excel
             }
             else { MessageBox.Show("Please choose the file and select the sheet name!"); }
         }
-
-        //private void Cmb_tabelat_neDB_Selected(object sender, RoutedEventArgs e)
-        //{
-
-        //}
+        
 
         private void Btn_add_Click(object sender, RoutedEventArgs e)
         {

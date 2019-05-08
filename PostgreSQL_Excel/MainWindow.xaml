@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PostgreSQL_Excel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1000">
+        Title="Shtim te dhenash ne Database" Height="690" Width="1000">
     <Border Padding="20">
         <StackPanel>
             <Grid>
@@ -23,7 +23,7 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -32,18 +32,24 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                                <Button Name="btn_choose" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Content="Choose" Margin="5" Click="Btn_choose_Click" />
+                                <Button Name="btn_choose" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Content="Zgjedh File" Margin="5" Click="Btn_choose_Click" />
                                 <TextBox Grid.Column="1" Grid.Row="0" Name="txt_path" Margin="5" />
-                                <TextBlock Grid.Column="0" FontWeight="Bold" Grid.Row="1" Text="Select work sheet" Margin="5 "/>
+                                <TextBlock Grid.Column="0" FontWeight="Bold" Grid.Row="1" Text="Zgjedh faqen" Margin="5 "/>
                             <ComboBox  Grid.Column="1" Grid.Row="1" Name="cmb_sheets" Margin="5"/>
 
                         </Grid>
-                            <Button  Name="btn_load" FontWeight="Bold" Margin="5 5 5 15"  Grid.Column="0" Grid.Row="2" Content="Load File Excel" Click="Btn_load_Click"/>
+                            <Button  Name="btn_load" FontWeight="Bold" Margin="5 5 5 15"  Grid.Column="0" Grid.Row="2" Content="Ngarko Excel File" Click="Btn_load_Click"/>
                         </StackPanel>
                     </Border>
                     <Border Margin="0 5 5 5"  Background="Gainsboro" BorderBrush="Gainsboro" BorderThickness="3">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" Text="Zgjidhni njerin nga opsionet ne te cilin doni te shtoni te dhenat e File Excel ne data base ose per te shtuar te dhena manualisht ne Data Base" TextWrapping="Wrap" Margin="5 15 5 5"/>
+                            <TextBlock FontWeight="Bold" Foreground="Brown" FontSize="14" TextWrapping="Wrap" Margin="5 15 5 5">
+                              <Run Text="Zgjidhni njerin nga opsionet ne menyre qe:"/>
+                                <LineBreak/> <LineBreak/>
+                            <Run Foreground="DarkCyan" Text="1. Te shtoni te dhenat e File Excel ne Data Base ose"/>
+                                <LineBreak/>
+                            <Run Foreground="DarkCyan" Text="2. Per te shtuar te dhena manualisht ne Data Base"/>
+                            </TextBlock>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -54,29 +60,43 @@
                                   <ComboBoxItem Content="Klienti(Customer)"/>
                                   <ComboBoxItem Content="Furnizuesi(Supplier)"/>
                                 </ComboBox>
-                                <Button Grid.Column="1" Margin="5 5 5 15" Name="btn_add" Content="ADD to Data Base" Click="Btn_add_Click"/>
+                                <Button Grid.Column="1" FontWeight="Bold" Margin="5 5 5 15" Name="btn_add" Content="Shto ne Data Base (ADD)" Click="Btn_add_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
                             </Grid>
 
                         </StackPanel>
                     </Border>
                     <Border Background="Gainsboro" Margin="0 5 5 5">
 
-                        <Grid Name="set_item">
+                        <Grid Name="set_item" Background="Azure">
                             <Grid.Style>
                                 <Style TargetType="Grid">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
@@ -86,56 +106,65 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Name="first_value" Text="Kodi" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="5 ">
-                            </TextBlock>
-                            <TextBox  Grid.Column="1" Grid.Row="0" Name="txt_kodi" Margin="5" />
-                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="1" Margin="5 ">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Artikulli(Item)">
-                                                <Setter Property="Text" Value="Artikulli"/>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
+                                                <Setter Property="Foreground" Value="Navy"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBox  Grid.Column="1" Grid.Row="0" Name="txt_kodi" Margin="5" />
+                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="1" Margin="5" Text="Artikulli">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
                                                 <Setter Property="Text" Value="Klienti"/>
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
                                                 <Setter Property="Text" Value="Furnitori"/>
+                                                <Setter Property="Foreground" Value="Navy"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
                             <TextBox Grid.Column="1"  Grid.Row="1" Name="txt_artikulli" Margin="5" />
-                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="2" Margin="5 ">
+                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="2" Margin="5" Text="Barkodi">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Artikulli(Item)">
-                                                <Setter Property="Text" Value="Barkodi"/>
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
                                                 <Setter Property="Text" Value="NIPT"/>
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
                                                 <Setter Property="Text" Value="NIPT"/>
+                                                <Setter Property="Foreground" Value="Navy"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
                             <TextBox Grid.Column="1" Grid.Row="2" Name="txt_barkodi" Margin="5" />
-                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="3" Margin="5 ">
+                            <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="3" Margin="5" Text="Cmimi">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Artikulli(Item)">
-                                                <Setter Property="Text" Value="Cmimi"/>
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
                                                 <Setter Property="Text" Value="Qyteti"/>
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
                                                 <Setter Property="Text" Value="Qyteti"/>
+                                                <Setter Property="Foreground" Value="Navy"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -148,9 +177,11 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
                                             <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
+                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Foreground" Value="Navy"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                 </Style>
@@ -203,24 +234,51 @@
                                     </Style>
                                 </ComboBox.Style>
                             </ComboBox>
-                            
+                            <Button Grid.Row="6" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5" Name="btn_add_user_input" Content="Shto te dhenat ne Data Base">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
+                                                <Setter Property="Foreground" Value="Navy"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Grid.Row="7" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5 5 5 15" Name="btn_show_db_selected_on_cmb" Content="Shfaq te dhenat nga database">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
+                                                <Setter Property="Foreground" Value="SeaGreen"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
+                                                <Setter Property="Foreground" Value="Navy"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
                         </Grid>
                        
                     </Border>
 
 
-                    <Button Grid.Column="0" Name="btn_show" Margin="0,10,5,10" Content="Show Database" Click="Btn_show_Click" />
+                    <!--<Button Grid.Column="0" Name="btn_show" Margin="0,10,5,10" Content="Show Database" Click="Btn_show_Click" />
                     <Button MaxWidth="200" Grid.Column="1" Margin="0 10 5 10" Content="Update selected row to Data Base"/>
-                    <Button MinWidth="100" Grid.Column="2" Margin="0 10 5 10" Content="Delete selected row to Data Base"/>
-                    <ComboBox  Grid.Column="3" Name="cmb_select" Margin="0 10 5 10">
+                    <Button MinWidth="100" Grid.Column="2" Margin="0 10 5 10" Content="Delete selected row to Data Base"/>-->
+                    <!--<ComboBox  Grid.Column="3" Name="cmb_select" Margin="0 10 5 10" SelectionChanged="Cmb_select_SelectionChanged">
                         <ComboBoxItem Content="Item"/>
                         <ComboBoxItem Content="Customer"/>
                         <ComboBoxItem Content="Supplier"/>
-                    </ComboBox>
+                    </ComboBox>-->
                 </StackPanel>
                 <StackPanel Grid.Column="1">
-                    <DataGrid Margin="5" Name="dataGridView1" Height="350" AutoGenerateColumns="True" Grid.Column="1">
+                    <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True" Grid.Column="1">
 
                     </DataGrid>
 

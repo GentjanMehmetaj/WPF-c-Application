@@ -85,7 +85,7 @@
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -248,7 +248,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Grid.Row="7" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5 5 5 15" Name="btn_show_db_selected_on_cmb" Content="Shfaq te dhenat nga database">
+                            <Button Grid.Row="7" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5 5 5 15" Name="btn_show_db_selected_on_cmb" Content="Shfaq te dhenat nga database" Click="Btn_show_db_selected_on_cmb_Click">
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Style.Triggers>

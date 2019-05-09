@@ -32,13 +32,14 @@ namespace PostgreSQL_Excel
         data_server_connection DtServer = new data_server_connection();
         connect_DB pg_Connect = new connect_DB();
         System.Data.DataTable dt_Excel = new System.Data.DataTable();
+        System.Data.DataTable dt_Excel_temp = new System.Data.DataTable();
         private NpgsqlConnection connection;
         private NpgsqlCommand command, comand1;
         private NpgsqlDataReader dataReader;
         private string NOvalueChange, valueChange;
         private bool data_load_from_excel_file = false;
         private bool file_excel_formated_ok = false;
-        List<string> Excel_colums = new List<string>();
+        
         private int row_selected;
         private int excelcopy = 0;
        
@@ -81,7 +82,7 @@ namespace PostgreSQL_Excel
         public MainWindow()
         {
             InitializeComponent();
-            fill_cmb_njesi();
+           // fill_cmb_njesi();
           
         }
         // funksion qe kontrollon nese file excel eshte item . dmth do shtohettek tabela Item ne database.
@@ -177,37 +178,39 @@ namespace PostgreSQL_Excel
             return check_file;
 
         }
-        void fill_cmb_njesi()
-        {
-            DtServer = pg_Connect.connect_database();
-            string connstring = DtServer.dt_connection;
-            bool conn_True = DtServer.fileExist;
-            if (conn_True)
-            {
-                try
-                {
+        //funksion per mbushjen nga database te combobox njesi.
+        // nese perdoret ne shtimin manual te te dhenave ne database
+        //void fill_cmb_njesi()
+        //{
+        //    DtServer = pg_Connect.connect_database();
+        //    string connstring = DtServer.dt_connection;
+        //    bool conn_True = DtServer.fileExist;
+        //    if (conn_True)
+        //    {
+        //        try
+        //        {
                     
-                    connection = new NpgsqlConnection(connstring);
-                    connection.Open();
-                    command = new NpgsqlCommand("SELECT * from public.item_unit", connection);
-                    NpgsqlDataReader dr = command.ExecuteReader();
-                    while(dr.Read())
-                    {
-                        string name = dr.GetString(2);
-                        cmb_njesi.Items.Add(name);
-                    }
-                    connection.Close();
+        //            connection = new NpgsqlConnection(connstring);
+        //            connection.Open();
+        //            command = new NpgsqlCommand("SELECT * from public.item_unit", connection);
+        //            NpgsqlDataReader dr = command.ExecuteReader();
+        //            while(dr.Read())
+        //            {
+        //                string name = dr.GetString(2);
+        //                cmb_njesi.Items.Add(name);
+        //            }
+        //            connection.Close();
                     
-                }
-                catch (Exception msg)
-                {
-                    //MessageBox.Show("You can't connect with database!Please chek data connections saved in the file and try again! " + "Server=127.0.0.1; Port=5432; User Id=postgres; Password=b2b4cc1b2; Database=DataStudent;");
-                    MessageBox.Show(msg.Message);
+        //        }
+        //        catch (Exception msg)
+        //        {
+        //            //MessageBox.Show("You can't connect with database!Please chek data connections saved in the file and try again! " + "Server=127.0.0.1; Port=5432; User Id=postgres; Password=b2b4cc1b2; Database=DataStudent;");
+        //            MessageBox.Show(msg.Message);
 
-                }
-            }
+        //        }
+        //    }
            
-        }
+        //}
 
 
         private void Btn_choose_Click(object sender, RoutedEventArgs e)
@@ -263,11 +266,15 @@ namespace PostgreSQL_Excel
                         OleDbDataAdapter mydataadapter = new OleDbDataAdapter("Select * from [" + cmb_sheets.Text + "]", conn);
 
                         //System.Data.DataTable
-                            dt_Excel = new System.Data.DataTable();
+                        dt_Excel = new System.Data.DataTable();
                         mydataadapter.Fill(dt_Excel);
                         conn.Close();
                        // cmb_sheets.Items.Clear();
                         dataGridView1.ItemsSource = dt_Excel.DefaultView;
+                        //ruhet nje koje data table te excel te loduar ne datagrid ne menyre qe te manipulohetne rastin
+                        // ezgjedhjes se tabelave tjera ku do behet shtimi ne database.
+                        //dt_Excel_temp = dt_Excel;
+                        //dt_Excel.Clear();
                         //hide column
                         //dataGridView1.Columns[2].Visibility = Visibility.Collapsed;
                         // dataGridView1.DataContext= dt;
@@ -333,7 +340,9 @@ namespace PostgreSQL_Excel
                 {
                     case "Artikulli(Item)":
                         {
-                            foreach (DataColumn dc in dt_Excel.Columns)
+                        List<string> Excel_colums = new List<string>();
+                        int saved_to_db = 0;
+                        foreach (DataColumn dc in dt_Excel.Columns)
                             {
                                     Excel_colums.Add(dc.ColumnName);
                             }
@@ -344,85 +353,91 @@ namespace PostgreSQL_Excel
                                 string connstring = DtServer.dt_connection;
                                 bool conn_True = DtServer.fileExist;
 
-                                if (conn_True)
-                                {
-                                   
-                                    foreach (DataRow dr in dt_Excel.Rows)
+                            if (conn_True)
+                            {
+
+                                foreach (DataRow dr in dt_Excel.Rows)
                                 {
                                     int Item_unit_ID = 0; int Item_sales_tax_percentage = 0;
                                     // zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi-e
                                     string Query1 = "SELECT item_unit_id from public.item_unit WHERE name ='" + dr["njesi"] + "';";
-                                        try
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        NpgsqlCommand comand1 = new NpgsqlCommand(Query1, connection);
+                                        connection.Open();
+                                        var query1_result = comand1.ExecuteScalar();
+                                        if (query1_result != null)
                                         {
-                                            connection = new NpgsqlConnection(connstring);
-                                            NpgsqlCommand comand1 = new NpgsqlCommand(Query1, connection);
-                                            connection.Open();
-                                            var query1_result = comand1.ExecuteScalar();
-                                            if (query1_result != null)
-                                            {
-                                                Item_unit_ID = Convert.ToInt16(query1_result);
-                                            }
-                                            else { Item_unit_ID = 0; }
-
-                                            connection.Close();
-
-                                            
+                                            Item_unit_ID = Convert.ToInt16(query1_result);
                                         }
-                                        catch (Exception ex)
+                                        else { Item_unit_ID = 0; }
+
+                                        connection.Close();
+
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                        //dt_saved_ok = false;
+                                        MessageBox.Show(ex.Message);
+
+                                    }
+                                    //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
+                                    string Query2 = "SELECT tax_rate_id from public.tax_rate WHERE item_sales_tax_percentage ='" + dr["tvsh"] + "';";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        NpgsqlCommand comand2 = new NpgsqlCommand(Query2, connection);
+                                        connection.Open();
+                                        var query2_result = comand2.ExecuteScalar();
+                                        if (query2_result != null)
                                         {
-                                            //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                            //dt_saved_ok = false;
-                                            MessageBox.Show(ex.Message);
-
+                                            Item_sales_tax_percentage = Convert.ToInt16(query2_result);
                                         }
-                                        //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
-                                        string Query2 = "SELECT tax_rate_id from public.tax_rate WHERE item_sales_tax_percentage ='" + dr["tvsh"] + "';";
-                                        try
-                                        {
-                                            connection = new NpgsqlConnection(connstring);
-                                            NpgsqlCommand comand2 = new NpgsqlCommand(Query2, connection);
-                                            connection.Open();
-                                            var query2_result = comand2.ExecuteScalar();
-                                            if (query2_result != null)
-                                            {
-                                                Item_sales_tax_percentage = Convert.ToInt16(query2_result);
-                                            }
-                                            else { Item_sales_tax_percentage = 0; }
+                                        else { Item_sales_tax_percentage = 0; }
 
-                                            connection.Close();
+                                        connection.Close();
 
 
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                            //dt_saved_ok = false;
-                                            MessageBox.Show(ex.Message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                        //dt_saved_ok = false;
+                                        MessageBox.Show(ex.Message);
 
-                                        }
-                                        string Query = "insert into public.item (item_code,name,barcode,price,tax_rate_id,item_unit_id) values('" + dr[0] + "','" + dr[1] + "','" + dr[2] + "','" + dr[3] + "','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
-                                        try
-                                        {
-                                            connection = new NpgsqlConnection(connstring);
-                                            command = new NpgsqlCommand(Query, connection);
-                                            connection.Open();
-                                            dataReader = command.ExecuteReader();
-                                            connection.Close();
-                                            ////  MessageBox.Show("Data saved to the database!");
-                                            //while (dataReader.Read())
-                                            //{
+                                    }
+                                    string Query = "insert into public.item (item_code,name,barcode,price,tax_rate_id,item_unit_id) values('" + dr[0] + "','" + dr[1] + "','" + dr[2] + "','" + dr[3] + "','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        command = new NpgsqlCommand(Query, connection);
+                                        connection.Open();
+                                        dataReader = command.ExecuteReader();
+                                        connection.Close();
+                                        saved_to_db += 1;
 
-                                            //}
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                            //dt_saved_ok = false;
-                                            MessageBox.Show(ex.Message);
-                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                        //dt_saved_ok = false;
+                                        saved_to_db = 0;
+                                        MessageBox.Show(ex.Message);
+
                                     }
                                 }
-                                else { MessageBox.Show("Connection with Data base failed!"); }
+                                if (saved_to_db == dt_Excel.Rows.Count)
+                                {
+                                    MessageBox.Show("Excel file u shtua me sukses tek tabela Item(Artikulli) ne Database!");
+                                    dataGridView1.ItemsSource = null;
+                                    dt_Excel.Clear();
+                                }
+
+                            }
+                            else { MessageBox.Show("Connection with Data base failed!"); }
 
                             }
                             else
@@ -434,6 +449,8 @@ namespace PostgreSQL_Excel
                         break;
                     case "Klienti(Customer)":
                     {
+                        List<string> Excel_colums = new List<string>();
+                        int saved_to_db = 0;
                         foreach (DataColumn dc in dt_Excel.Columns)
                         {
                             Excel_colums.Add(dc.ColumnName);
@@ -486,18 +503,21 @@ namespace PostgreSQL_Excel
                                         connection.Open();
                                         dataReader = command.ExecuteReader();
                                         connection.Close();
-                                        ////  MessageBox.Show("Data saved to the database!");
-                                        //while (dataReader.Read())
-                                        //{
-
-                                        //}
+                                        saved_to_db += 1;
                                     }
                                     catch (Exception ex)
                                     {
                                         //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
                                         //dt_saved_ok = false;
+                                        saved_to_db = 0;
                                         MessageBox.Show(ex.Message);
                                     }
+                                }
+                                if (saved_to_db == dt_Excel.Rows.Count)
+                                {
+                                    MessageBox.Show("Excel file u shtua me sukses tek tabela customer(Klienti) ne Database!");
+                                    dataGridView1.ItemsSource = null;
+                                    dt_Excel.Clear();
                                 }
                             }
                             else { MessageBox.Show("Connection with Data base failed!"); }
@@ -512,6 +532,8 @@ namespace PostgreSQL_Excel
                         break;
                     case "Furnizuesi(Supplier)":
                     {
+                        List<string> Excel_colums = new List<string>();
+                        int saved_to_db = 0;
                         foreach (DataColumn dc in dt_Excel.Columns)
                         {
                             Excel_colums.Add(dc.ColumnName);
@@ -564,18 +586,23 @@ namespace PostgreSQL_Excel
                                         connection.Open();
                                         dataReader = command.ExecuteReader();
                                         connection.Close();
-                                        ////  MessageBox.Show("Data saved to the database!");
-                                        //while (dataReader.Read())
-                                        //{
+                                        saved_to_db += 1;
+                                       
 
-                                        //}
                                     }
                                     catch (Exception ex)
                                     {
                                         //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
                                         //dt_saved_ok = false;
+                                        saved_to_db = 0;
                                         MessageBox.Show(ex.Message);
                                     }
+                                }
+                                if (saved_to_db == dt_Excel.Rows.Count)
+                                {
+                                    MessageBox.Show("Excel file u shtua me sukses tek tabela supplier(Furnizues) ne Database!");
+                                    dataGridView1.ItemsSource = null;
+                                    dt_Excel.Clear();
                                 }
                             }
                             else { MessageBox.Show("Connection with Data base failed!"); }
@@ -597,9 +624,45 @@ namespace PostgreSQL_Excel
                
 
         }
+        // kur behet nje perzgjedhje ne combobox:
+        //Artikull(item),Klient(Customer),Furnitor(supplier)
+        //private bool handle = true;
+        //private void ComboBox_DropDownClosed(object sender, EventArgs e)
+        //{
+        //    if (handle) Handle();
+        //    handle = true;
+        //}
+
+        //private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ComboBox cmb = sender as ComboBox;
+        //    handle = !cmb.IsDropDownOpen;
+        //    Handle();
+        //}
+
+        //private void Handle()
+        //{
+        //    switch (cmb_tabelat_neDB.SelectedItem.ToString().Split(new string[] { ": " }, StringSplitOptions.None).Last())
+        //    {
+        //        case "Artikulli(Item)":
+        //            //Handle for the first combobox 
+        //           // dt_Excel = dt_Excel_temp;
+        //            break;
+        //        case "Klienti(Customer)":
+        //            //Handle for the second combobox
+                   
+        //           // dt_Excel = dt_Excel_temp;
+        //            break;
+        //        case "Furnizuesi(Supplier)":
+        //            //Handle for the third combobox
+                   
+        //           // dt_Excel = dt_Excel_temp;
+        //            break;
+        //    }
+        //}
 
 
 
-       
+
     }
 }

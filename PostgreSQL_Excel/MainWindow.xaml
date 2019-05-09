@@ -44,11 +44,12 @@
                     <Border Margin="0 5 5 5"  Background="Gainsboro" BorderBrush="Gainsboro" BorderThickness="3">
                     <StackPanel>
                             <TextBlock FontWeight="Bold" Foreground="Brown" FontSize="14" TextWrapping="Wrap" Margin="5 15 5 5">
-                              <Run Text="Zgjidhni njerin nga opsionet ne menyre qe:"/>
+                              <Run Text="Zgjidhni njerin nga opsionet ne menyre qe te shtoni te dhenat e File Excel Data Base."/>
                                 <LineBreak/> <LineBreak/>
-                            <Run Foreground="DarkCyan" Text="1. Te shtoni te dhenat e File Excel ne Data Base ose"/>
-                                <LineBreak/>
-                            <Run Foreground="DarkCyan" Text="2. Per te shtuar te dhena manualisht ne Data Base"/>
+                                <Run Text="Opsioni qe do zgjidhni eshte Tabele ne Database!"/>
+                            <!--<Run Foreground="DarkCyan" Text="Te shtoni te dhenat e File Excel ne Data Base ose"/>
+                                <LineBreak/>-->
+                            <!--<Run Foreground="DarkCyan" Text="2. Per te shtuar te dhena manualisht ne Data Base"/>-->
                             </TextBlock>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -56,7 +57,20 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <ComboBox Name="cmb_tabelat_neDB" Margin="5 5 5 15">
-                                  <ComboBoxItem  Content="Artikulli(Item)"/>
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
+                                                    <Setter Property="Foreground" Value="SeaGreen"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
+                                                    <Setter Property="Foreground" Value="Navy"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+
+                                        </Style>
+                                    </ComboBox.Style>
+                                    <ComboBoxItem  Content="Artikulli(Item)"/>
                                   <ComboBoxItem Content="Klienti(Customer)"/>
                                   <ComboBoxItem Content="Furnizuesi(Supplier)"/>
                                 </ComboBox>
@@ -105,7 +119,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Name="first_value" Text="Kodi" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="5 ">
+                            <!--<TextBlock Name="first_value" Text="Kodi" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="5 ">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -233,8 +247,8 @@
 
                                     </Style>
                                 </ComboBox.Style>
-                            </ComboBox>
-                            <Button Grid.Row="6" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5" Name="btn_add_user_input" Content="Shto te dhenat ne Data Base">
+                            </ComboBox>-->
+                            <!--<Button Grid.Row="6" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5" Name="btn_add_user_input" Content="Shto te dhenat ne Data Base">
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Style.Triggers>
@@ -247,7 +261,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
-                            </Button>
+                            </Button>-->
                             <Button Grid.Row="7" FontWeight="Bold" Grid.ColumnSpan="2" Margin="5 5 5 15" Name="btn_show_db_selected_on_cmb" Content="Shfaq te dhenat nga database" Click="Btn_show_db_selected_on_cmb_Click">
                                 <Button.Style>
                                     <Style TargetType="Button">

@@ -56,7 +56,7 @@ namespace PostgreSQL_Excel
         Dictionary<string, string> customer_dictionary = new Dictionary<string, string>()
         {
             { "Kodi", "customer_code" },
-            { "Pershkrimi", "name"},
+            { "Pershkrim", "name"},
             {"NIPT", "tax_id"},
             { "Qyteti", "city_id"},
 
@@ -64,7 +64,7 @@ namespace PostgreSQL_Excel
         };
         Dictionary<string, string> supplier_dictionary = new Dictionary<string, string>()
         {
-           { "Kodi", "supplier_code" },
+           { "Kodi(S)", "supplier_code" },
             { "Pershkrim", "name"},
             {"NIPT", "tax_id"},
             { "Qyteti", "city_id"},
@@ -126,6 +126,37 @@ namespace PostgreSQL_Excel
                 foreach (string el in ex_colums)
                 {
                     if (customer_dictionary.ContainsKey(el))
+                    {
+                        i += 1;
+                    }
+                }
+                if (i == nr_el_liste)
+                {
+                    check_file = true;
+                }
+                else
+                {
+                    check_file = false;
+                }
+            }
+            else
+            {
+                check_file = false;
+            }
+            return check_file;
+
+        }
+        bool excel_file_loaded_is_supplier(List<string> ex_colums)
+        {
+            bool check_file = false;
+            int i = 0;
+            int nr_el_liste = 0;
+            if (ex_colums.Count == supplier_dictionary.Count)
+            {
+                nr_el_liste = ex_colums.Count;
+                foreach (string el in ex_colums)
+                {
+                    if (supplier_dictionary.ContainsKey(el))
                     {
                         i += 1;
                     }
@@ -480,13 +511,86 @@ namespace PostgreSQL_Excel
                     }
                         break;
                     case "Furnizuesi(Supplier)":
+                    {
+                        foreach (DataColumn dc in dt_Excel.Columns)
                         {
+                            Excel_colums.Add(dc.ColumnName);
+                        }
+                        bool is_customer = excel_file_loaded_is_supplier(Excel_colums);
+                        if (is_customer)
+                        {
+                            DtServer = pg_Connect.connect_database();
+                            string connstring = DtServer.dt_connection;
+                            bool conn_True = DtServer.fileExist;
+
+                            if (conn_True)
+                            {
+
+                                foreach (DataRow dr in dt_Excel.Rows)
+                                {
+                                    int City_id = 0;
+                                    // zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi-e
+                                    string Query1 = "SELECT city_id from public.city WHERE name ='" + dr["Qyteti"] + "';";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        NpgsqlCommand comand1 = new NpgsqlCommand(Query1, connection);
+                                        connection.Open();
+                                        var query1_result = comand1.ExecuteScalar();
+                                        if (query1_result != null)
+                                        {
+                                            City_id = Convert.ToInt16(query1_result);
+                                        }
+                                        else { City_id = 0; }
+
+                                        connection.Close();
+
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                        //dt_saved_ok = false;
+                                        MessageBox.Show(ex.Message);
+
+                                    }
+                                    //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
+
+                                    string Query = "insert into public.supplier (supplier_code,name,tax_id,city_id) values('" + dr["Kodi(S)"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
+                                    try
+                                    {
+                                        NpgsqlConnection connection = new NpgsqlConnection(connstring);
+                                        NpgsqlCommand command = new NpgsqlCommand(Query, connection);
+                                        connection.Open();
+                                        dataReader = command.ExecuteReader();
+                                        connection.Close();
+                                        ////  MessageBox.Show("Data saved to the database!");
+                                        //while (dataReader.Read())
+                                        //{
+
+                                        //}
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                        //dt_saved_ok = false;
+                                        MessageBox.Show(ex.Message);
+                                    }
+                                }
+                            }
+                            else { MessageBox.Show("Connection with Data base failed!"); }
 
                         }
+                        else
+                        {
+                            MessageBox.Show("Ky file nuk mund te shtohet ne Database! Ju keni zgjedhur {0}. Sigurohu qe keni zgjedhur opsionin e duhur ne te cilin doni te shtoni te dhenat e file Excel.", user_select);
+                        }
+
+                    }
                         break;
                     default:
                         {
-
+                        MessageBox.Show("File i Gabuar! Sigurohu qe file i zgjedhur eshte ne formatin e duhur!");
                         }
                         break;
                 }

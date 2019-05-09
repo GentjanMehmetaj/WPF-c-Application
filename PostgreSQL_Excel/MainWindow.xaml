@@ -44,9 +44,9 @@
                     <Border Margin="0 5 5 5"  Background="Gainsboro" BorderBrush="Gainsboro" BorderThickness="3">
                     <StackPanel>
                             <TextBlock FontWeight="Bold" Foreground="Brown" FontSize="14" TextWrapping="Wrap" Margin="5 15 5 5">
-                              <Run Text="Zgjidhni njerin nga opsionet ne menyre qe te shtoni te dhenat e File Excel Data Base."/>
+                              <Run Text="Zgjidhni njerin nga opsionet ne menyre qe te shtoni te dhenat e File Excel ne Data Base."/>
                                 <LineBreak/> <LineBreak/>
-                                <Run Text="Opsioni qe do zgjidhni eshte Tabele ne Database!"/>
+                                <Run Text="Opsioni qe do zgjidhni eshte Tabele ne Database ne te cilen do shtohen te dhenat!"/>
                             <!--<Run Foreground="DarkCyan" Text="Te shtoni te dhenat e File Excel ne Data Base ose"/>
                                 <LineBreak/>-->
                             <!--<Run Foreground="DarkCyan" Text="2. Per te shtuar te dhena manualisht ne Data Base"/>-->

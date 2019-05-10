@@ -82,10 +82,68 @@ namespace PostgreSQL_Excel
         public MainWindow()
         {
             InitializeComponent();
-           // fill_cmb_njesi();
-          
+            // fill_cmb_njesi();
+           
         }
-        // funksion qe kontrollon nese file excel eshte item . dmth do shtohettek tabela Item ne database.
+        //selectimi i nje celli ne data grid
+        //public static DataGridCell GetCell(DataGrid dataGrid, DataGridRow rowContainer, int column)
+        //{
+        //    if (rowContainer != null)
+        //    {
+        //        DataGridCellsPresenter presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
+        //        if (presenter == null)
+        //        {
+        //            /* if the row has been virtualized away, call its ApplyTemplate() method
+        //             * to build its visual tree in order for the DataGridCellsPresenter
+        //             * and the DataGridCells to be created */
+        //            rowContainer.ApplyTemplate();
+        //            presenter = FindVisualChild<DataGridCellsPresenter>(rowContainer);
+        //        }
+        //        if (presenter != null)
+        //        {
+        //            DataGridCell cell = presenter.ItemContainerGenerator.ContainerFromIndex(column) as DataGridCell;
+        //            if (cell == null)
+        //            {
+        //                /* bring the column into view
+        //                 * in case it has been virtualized away */
+        //                dataGrid.ScrollIntoView(rowContainer, dataGrid.Columns[column]);
+        //                cell = presenter.ItemContainerGenerator.ContainerFromIndex(column) as DataGridCell;
+        //            }
+        //            return cell;
+        //        }
+        //    }
+        //    return null;
+        //}
+        void SelectRowByIndex(DataGrid dataGrid, int rowIndex)
+        {
+            //if (!dataGrid.SelectionUnit.Equals(DataGridSelectionUnit.FullRow))
+            //    throw new ArgumentException("The SelectionUnit of the DataGrid must be set to FullRow.");
+
+            //if (rowIndex < 0 || rowIndex > (dataGrid.Items.Count - 1))
+            //    throw new ArgumentException(string.Format("{0} is an invalid row index.", rowIndex));
+
+            dataGrid.SelectedItems.Clear();
+            /* set the SelectedItem property */
+            object item = dataGrid.Items[rowIndex]; // = Product X
+            dataGrid.SelectedItem = item;
+
+            //DataGridRow row = dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex) as DataGridRow;
+            //if (row == null)
+            //{
+            //    /* bring the data item (Product object) into view
+            //     * in case it has been virtualized away */
+            //    dataGrid.ScrollIntoView(item);
+            //    row = dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex) as DataGridRow;
+            //}
+            //if (row != null)
+            //{
+            //    DataGridCell cell = GetCell(dataGrid, row, 0);
+            //    if (cell != null)
+            //        cell.Focus();
+            //}
+        }
+
+        // funksion qe kontrollon nese file excel eshte item . dmth do shtohet tek tabela Item ne database.
         bool excel_file_loaded_is_item(List<string> ex_colums)
         {
             bool check_file = false;
@@ -234,7 +292,7 @@ namespace PostgreSQL_Excel
                 // Add the sheet name to the string array.
                 foreach (DataRow row in dt.Rows)
                 {
-                    excelSheets[i] = row["TABLE_NAME"].ToString();
+                    excelSheets[i] = row["TABLE_NAME"].ToString().Replace("$", "");
                     string sheet1 = excelSheets[i];
                     i++;
                 }
@@ -501,33 +559,47 @@ namespace PostgreSQL_Excel
                                                 MessageBox.Show(ex.Message);
 
                                             }
-                                            if (Item_unit_ID != 0 && Item_sales_tax_percentage != 0)
+                                            if (Item_unit_ID != 0)
                                             {
-                                                string Query = "insert into public.item (item_code,name,barcode,price,tax_rate_id,item_unit_id) values('" + dr["kodi"] + "','" + dr["artikulli"] + "','" + dr["barkodi"] + "','" + dr["cmimi"] + "','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
-                                                try
+                                                if (Item_sales_tax_percentage != 0)
                                                 {
-                                                    connection = new NpgsqlConnection(connstring);
-                                                    command = new NpgsqlCommand(Query, connection);
-                                                    connection.Open();
-                                                    dataReader = command.ExecuteReader();
-                                                    connection.Close();
-                                                    saved_to_db += 1;
+                                                    string Query = "insert into public.item (item_code,name,barcode,price,tax_rate_id,item_unit_id) values('" + dr["kodi"] + "','" + dr["artikulli"] + "','" + dr["barkodi"] + "','" + dr["cmimi"] + "','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
+                                                    try
+                                                    {
+                                                        connection = new NpgsqlConnection(connstring);
+                                                        command = new NpgsqlCommand(Query, connection);
+                                                        connection.Open();
+                                                        dataReader = command.ExecuteReader();
+                                                        connection.Close();
+                                                        saved_to_db += 1;
 
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                                        //dt_saved_ok = false;
+                                                        saved_to_db = 0;
+                                                        MessageBox.Show(ex.Message);
+
+                                                    }
                                                 }
-                                                catch (Exception ex)
+                                                else
                                                 {
-                                                    //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                                    //dt_saved_ok = false;
-                                                    saved_to_db = 0;
-                                                    MessageBox.Show(ex.Message);
 
+                                                    int index = dt_Excel.Rows.IndexOf(dr);
+                                                    SelectRowByIndex(dataGridView1, index);
+                                                    index += 1;
+                                                    MessageBox.Show("Ne rreshtin " + index + " TVSH eshte gabim.Rregullo te dhenat ne menyre qe te shtohen ne database!");
+                                                    break;
                                                 }
                                             }
                                             else {
                                                
-                                                    int index = dt_Excel.Rows.IndexOf(dr);
-                                                
-                                                MessageBox.Show("Ne rreshtin "+index+" njesia ose perqindja eshte gabim.");
+                                                int index = dt_Excel.Rows.IndexOf(dr);
+                                                SelectRowByIndex(dataGridView1, index);
+                                                index += 1;
+                                                MessageBox.Show("Ne rreshtin "+index+ " njesia eshte gabim.Rregullo te dhenat ne menyre qe te shtohen ne database!");
+                                                break;
                                             }
                                         }
                                         if (saved_to_db == dt_Excel.Rows.Count)
@@ -594,25 +666,37 @@ namespace PostgreSQL_Excel
                                                 MessageBox.Show(ex.Message);
 
                                             }
-                                            //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
+                                            if (City_id != 0)
+                                            {
 
-                                            string Query = "insert into public.customer (customer_code,name,tax_id,city_id) values('" + dr["Kodi"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
-                                            try
-                                            {
-                                                connection = new NpgsqlConnection(connstring);
-                                                command = new NpgsqlCommand(Query, connection);
-                                                connection.Open();
-                                                dataReader = command.ExecuteReader();
-                                                connection.Close();
-                                                saved_to_db += 1;
+                                                string Query = "insert into public.customer (customer_code,name,tax_id,city_id) values('" + dr["Kodi"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
+                                                try
+                                                {
+                                                    connection = new NpgsqlConnection(connstring);
+                                                    command = new NpgsqlCommand(Query, connection);
+                                                    connection.Open();
+                                                    dataReader = command.ExecuteReader();
+                                                    connection.Close();
+                                                    saved_to_db += 1;
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                                    //dt_saved_ok = false;
+                                                    saved_to_db = 0;
+                                                    MessageBox.Show(ex.Message);
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                                //dt_saved_ok = false;
-                                                saved_to_db = 0;
-                                                MessageBox.Show(ex.Message);
+
+                                                int index = dt_Excel.Rows.IndexOf(dr);
+                                                SelectRowByIndex(dataGridView1, index);
+                                                index += 1;
+                                                MessageBox.Show("Ne rreshtin " + index + " Emri i Qyteti-t eshte gabim.Rregullo te dhenat ne menyre qe te shtohen ne database!");
+                                                break;
                                             }
+
                                         }
                                         if (saved_to_db == dt_Excel.Rows.Count)
                                         {
@@ -678,25 +762,36 @@ namespace PostgreSQL_Excel
 
                                             }
                                             //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
-
-                                            string Query = "insert into public.supplier (supplier_code,name,tax_id,city_id) values('" + dr["Kodi(S)"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
-                                            try
+                                            if (City_id!=0)
                                             {
-                                                NpgsqlConnection connection = new NpgsqlConnection(connstring);
-                                                NpgsqlCommand command = new NpgsqlCommand(Query, connection);
-                                                connection.Open();
-                                                dataReader = command.ExecuteReader();
-                                                connection.Close();
-                                                saved_to_db += 1;
+                                                string Query = "insert into public.supplier (supplier_code,name,tax_id,city_id) values('" + dr["Kodi(S)"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
+                                                try
+                                                {
+                                                    NpgsqlConnection connection = new NpgsqlConnection(connstring);
+                                                    NpgsqlCommand command = new NpgsqlCommand(Query, connection);
+                                                    connection.Open();
+                                                    dataReader = command.ExecuteReader();
+                                                    connection.Close();
+                                                    saved_to_db += 1;
 
 
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
+                                                    //dt_saved_ok = false;
+                                                    saved_to_db = 0;
+                                                    MessageBox.Show(ex.Message);
+                                                }
                                             }
-                                            catch (Exception ex)
+                                            else
                                             {
-                                                //MessageBox.Show("You can't connect with database and for this reason you can not save this data!Please chek data connections saved in the file and try again");
-                                                //dt_saved_ok = false;
-                                                saved_to_db = 0;
-                                                MessageBox.Show(ex.Message);
+
+                                                int index = dt_Excel.Rows.IndexOf(dr);
+                                                SelectRowByIndex(dataGridView1, index);
+                                                index += 1;
+                                                MessageBox.Show("Ne rreshtin " + index + " Emri i Qyteti-t eshte gabim. Rregullo te dhenat ne menyre qe te shtohen ne database!");
+                                                break;
                                             }
                                         }
                                         if (saved_to_db == dt_Excel.Rows.Count)

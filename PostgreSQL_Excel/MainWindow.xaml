@@ -291,9 +291,13 @@
                         <ComboBoxItem Content="Supplier"/>
                     </ComboBox>-->
                 </StackPanel>
-                <StackPanel Grid.Column="1">
-                    <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True" Grid.Column="1">
-
+                <StackPanel Grid.Column="1"><!--AlternationCount="2" AlternatingRowBackground="DodgerBlue"-->
+                    <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True"
+                              CanUserAddRows="False" Grid.Column="1" ColumnWidth="auto" 
+                              EnableRowVirtualization="false" EnableColumnVirtualization="false" 
+                              FlowDirection="LeftToRight" 
+                              CanUserReorderColumns="False" >
+                        
                     </DataGrid>
 
                 </StackPanel>

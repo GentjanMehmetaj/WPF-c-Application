@@ -25,8 +25,7 @@ namespace PostgreSQL_Excel.Models
         public data_server_connection connect_database()
         {
             data_server_connection dt_server;
-            string path = " C:\\Users\\albana\\Desktop\\data_connection_of_servers.txt";
-                //Environment.CurrentDirectory + "/" + "data_connection_of_servers.txt";
+            string path = Environment.CurrentDirectory + "/" + "data_connection_of_servers.txt";
             if (File.Exists(path))
             {
                 using (StreamReader str = new StreamReader(path))

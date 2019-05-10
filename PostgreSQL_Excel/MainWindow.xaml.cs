@@ -281,10 +281,19 @@ namespace PostgreSQL_Excel
                 this.txt_path.Text = openfiledialog1.FileName;
                 string pathconn = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + txt_path.Text + ";Extended Properties=\"Excel 12.0; HDR=YES;\" ; ";
                 OleDbConnection conn = new OleDbConnection(pathconn);
-                conn.Open();
-                //  DataTable dt = new DataTable();
-              System.Data.DataTable dt = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables,null);
-                conn.Close();
+                System.Data.DataTable dt = new System.Data.DataTable();
+                try
+                {
+                    conn.Open();
+                    dt = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                    conn.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                    //  DataTable dt = new DataTable();
+               
                 cmb_sheets.Items.Clear();
                 String[] excelSheets = new String[dt.Rows.Count];
                 int i = 0;
@@ -350,6 +359,19 @@ namespace PostgreSQL_Excel
 
             }
             else { MessageBox.Show("Please choose the file and select the sheet name!"); }
+        }
+
+        private void Btn_clear_exel_path_Click(object sender, RoutedEventArgs e)
+        {
+            txt_path.Clear();
+            cmb_sheets.Items.Clear();
+
+        }
+
+        private void Btn_clear_datagrid_Click(object sender, RoutedEventArgs e)
+        {
+            dataGridView1.ItemsSource = null;
+            dt_Excel.Clear();
         }
 
         private void Btn_show_db_selected_on_cmb_Click(object sender, RoutedEventArgs e)

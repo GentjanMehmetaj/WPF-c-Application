@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\PostgreSQL_Excel"
   ],
-  "SelectedNode": "\\PostgreSQL_Excel.sln",
+  "SelectedNode": "\\PostgreSQL_Excel\\MainWindow.xaml.cs",
   "PreviewInSolutionExplorer": false
 }

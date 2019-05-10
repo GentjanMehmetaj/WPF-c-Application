@@ -292,9 +292,9 @@
                     </ComboBox>-->
                 </StackPanel>
                 <StackPanel Grid.Column="1"><!--AlternationCount="2" AlternatingRowBackground="DodgerBlue"-->
-                    <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True"
+                    <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True" Width="auto" 
                               CanUserAddRows="False" Grid.Column="1" ColumnWidth="auto" 
-                              EnableRowVirtualization="false" EnableColumnVirtualization="false" 
+                              EnableRowVirtualization="false" EnableColumnVirtualization="False" 
                               FlowDirection="LeftToRight" 
                               CanUserReorderColumns="False" >
                         

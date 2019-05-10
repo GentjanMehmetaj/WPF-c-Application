@@ -65,10 +65,10 @@ namespace PostgreSQL_Excel
         };
         Dictionary<string, string> supplier_dictionary = new Dictionary<string, string>()
         {
-           { "Kodi(S)", "supplier_code" },
-            { "Pershkrim", "name"},
-            {"NIPT", "tax_id"},
-            { "Qyteti", "city_id"},
+           { "Kodi(Furnitor)", "supplier_code" },
+            { "Pershkrim(Furnitor)", "name"},
+            {"NIPT(Furnitor)", "tax_id"},
+            { "Qyteti(Furnitor)", "city_id"},
 
         };
         Dictionary<string, string> user_select_dictionary = new Dictionary<string, string>()
@@ -322,7 +322,7 @@ namespace PostgreSQL_Excel
                     {
                         OleDbConnection conn = new OleDbConnection(pathconn);
                         conn.Open();
-                        OleDbDataAdapter mydataadapter = new OleDbDataAdapter("Select * from [" + cmb_sheets.Text + "]", conn);
+                        OleDbDataAdapter mydataadapter = new OleDbDataAdapter("Select * from [" + cmb_sheets.Text + "$]", conn);
 
                         //System.Data.DataTable
                         dt_Excel = new System.Data.DataTable();
@@ -737,7 +737,7 @@ namespace PostgreSQL_Excel
                                         {
                                             int City_id = 0;
                                             // zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi-e
-                                            string Query1 = "SELECT city_id from public.city WHERE name ='" + dr["Qyteti"] + "';";
+                                            string Query1 = "SELECT city_id from public.city WHERE name ='" + dr["Qyteti(Furnitor)"] + "';";
                                             try
                                             {
                                                 connection = new NpgsqlConnection(connstring);
@@ -764,7 +764,7 @@ namespace PostgreSQL_Excel
                                             //zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi - e
                                             if (City_id!=0)
                                             {
-                                                string Query = "insert into public.supplier (supplier_code,name,tax_id,city_id) values('" + dr["Kodi(S)"] + "','" + dr["Pershkrim"] + "','" + dr["NIPT"] + "','" + City_id + "');";
+                                                string Query = "insert into public.supplier (supplier_code,name,tax_id,city_id) values('" + dr["Kodi(Furnitor)"] + "','" + dr["Pershkrim(Furnitor)"] + "','" + dr["NIPT(Furnitor)"] + "','" + City_id + "');";
                                                 try
                                                 {
                                                     NpgsqlConnection connection = new NpgsqlConnection(connstring);

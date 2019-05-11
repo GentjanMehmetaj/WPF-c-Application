@@ -620,7 +620,7 @@ namespace PostgreSQL_Excel
                                         }
 
                                     }
-                                    else { MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!"); }
+                                    else { MessageBox.Show("Lidhja me DataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!"); }
 
                                 }
                                 else

@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Data;
 using System.IO;
 using System.Data.OleDb;
-//using _excel = Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Interop.Excel;
 using Npgsql;
 using PostgreSQL_Excel.Models;
 
@@ -34,14 +23,13 @@ namespace PostgreSQL_Excel
         System.Data.DataTable dt_Excel = new System.Data.DataTable();
         System.Data.DataTable dt_Excel_temp = new System.Data.DataTable();
         private NpgsqlConnection connection;
-        private NpgsqlCommand command, comand1;
+        private NpgsqlCommand command;
         private NpgsqlDataReader dataReader;
-        private string NOvalueChange, valueChange;
-        private bool data_load_from_excel_file = false;
-        private bool file_excel_formated_ok = false;
         
-        private int row_selected;
-        private int excelcopy = 0;
+        private bool data_load_from_excel_file = false;
+       
+        
+      
        
         Dictionary<string, string> Item_dictionary = new Dictionary<string, string>()
         {
@@ -414,7 +402,7 @@ namespace PostgreSQL_Excel
                             }
                             else
                             {
-                                MessageBox.Show("Connection to dataBase has Failed Because File with data connections not Exist or name of the file has changed!");
+                                MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!");
                             }
                         }
                         break;
@@ -447,7 +435,7 @@ namespace PostgreSQL_Excel
                             }
                             else
                             {
-                                MessageBox.Show("Connection to dataBase has Failed Because File with data connections not Exist or name of the file has changed!");
+                                MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!");
                             }
                         }
                         break;
@@ -480,7 +468,7 @@ namespace PostgreSQL_Excel
                             }
                             else
                             {
-                                MessageBox.Show("Connection to dataBase has Failed Because File with data connections not Exist or name of the file has changed!");
+                                MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!");
                             }
                         }
                         break;
@@ -632,7 +620,7 @@ namespace PostgreSQL_Excel
                                         }
 
                                     }
-                                    else { MessageBox.Show("Connection with Data base failed!"); }
+                                    else { MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!"); }
 
                                 }
                                 else
@@ -727,7 +715,7 @@ namespace PostgreSQL_Excel
                                             dt_Excel.Clear();
                                         }
                                     }
-                                    else { MessageBox.Show("Connection with Data base failed!"); }
+                                    else { MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!"); }
 
                                 }
                                 else
@@ -823,7 +811,7 @@ namespace PostgreSQL_Excel
                                             dt_Excel.Clear();
                                         }
                                     }
-                                    else { MessageBox.Show("Connection with Data base failed!"); }
+                                    else { MessageBox.Show("Lidhja me dataBase nuk eshte e mundur sepse FILE me te dhenat e DataBase-s me te cilen eshte i lidhur programi nuk Egziston ose eshte ndryshuar emri i tij!"); }
 
                                 }
                                 else

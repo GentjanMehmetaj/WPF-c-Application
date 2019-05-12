@@ -384,7 +384,8 @@ namespace PostgreSQL_Excel
                                 {
 
                                     connection = new NpgsqlConnection(connstring);
-                                    command = new NpgsqlCommand("SELECT * from public.item", connection);
+                                    command = new NpgsqlCommand("SELECT item_id,name,price,is_with_tax,tax_rate_id,buying_price,barcode,item_code,item_unit_id from public.item", connection);
+                                   // command = new NpgsqlCommand("SELECT * from public.item", connection);
                                     NpgsqlDataAdapter NpgsqlDA = new NpgsqlDataAdapter();
                                     NpgsqlDA.SelectCommand = command;
                                     System.Data.DataTable dbdataset = new System.Data.DataTable();
@@ -417,7 +418,8 @@ namespace PostgreSQL_Excel
                                 {
 
                                     connection = new NpgsqlConnection(connstring);
-                                    command = new NpgsqlCommand("SELECT * from public.customer", connection);
+                                    command = new NpgsqlCommand("SELECT customer_id,customer_code,tax_id,city_id,name from public.customer", connection);
+                                   // command = new NpgsqlCommand("SELECT * from public.customer", connection);
                                     NpgsqlDataAdapter NpgsqlDA = new NpgsqlDataAdapter();
                                     NpgsqlDA.SelectCommand = command;
                                     System.Data.DataTable dbdataset = new System.Data.DataTable();
@@ -450,7 +452,7 @@ namespace PostgreSQL_Excel
                                 {
 
                                     connection = new NpgsqlConnection(connstring);
-                                    command = new NpgsqlCommand("SELECT * from public.supplier", connection);
+                                    command = new NpgsqlCommand("SELECT supplier_id,supplier_code,tax_id,city_id,name from public.supplier", connection);
                                     NpgsqlDataAdapter NpgsqlDA = new NpgsqlDataAdapter();
                                     NpgsqlDA.SelectCommand = command;
                                     System.Data.DataTable dbdataset = new System.Data.DataTable();
@@ -516,7 +518,7 @@ namespace PostgreSQL_Excel
 
                                         foreach (DataRow dr in dt_Excel.Rows)
                                         {
-                                            int Item_unit_ID = 0; int Item_sales_tax_percentage = 0;
+                                            int Item_unit_ID = 0; int Item_sales_tax_percentage = -1;
                                             // zgjedhja ne database tek tabela item_unit e vleres qe i korespondon kesaj njesi-e
                                             string Query1 = "SELECT item_unit_id from public.item_unit WHERE name ='" + dr["njesi"] + "';";
                                            
@@ -556,7 +558,7 @@ namespace PostgreSQL_Excel
                                                 {
                                                     Item_sales_tax_percentage = Convert.ToInt16(query2_result);
                                                 }
-                                                else { Item_sales_tax_percentage = 0; }
+                                                else { Item_sales_tax_percentage = -1; }
 
                                                 connection.Close();
 
@@ -571,9 +573,16 @@ namespace PostgreSQL_Excel
                                             }
                                             if (Item_unit_ID != 0)
                                             {
-                                                if (Item_sales_tax_percentage != 0)
-                                                {
-                                                    string Query = "insert into public.item (item_code,name,barcode,price,tax_rate_id,item_unit_id) values('" + dr["kodi"] + "','" + dr["artikulli"] + "','" + dr["barkodi"] + "','" + dr["cmimi"] + "','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
+                                                if (Item_sales_tax_percentage != -1)
+                                                { int tax=-1;
+                                                    if (Item_sales_tax_percentage == 1)
+                                                    {
+                                                        tax = 0;
+                                                    }
+                                                    else { tax = 1; }
+
+
+                                                    string Query = "insert into public.item (item_code,name,barcode,price,is_with_tax,tax_rate_id,item_unit_id) values('" + dr["kodi"] + "','" + dr["artikulli"] + "','" + dr["barkodi"] + "','" + dr["cmimi"] + "','"+tax+"','" + Item_sales_tax_percentage + "','" + Item_unit_ID + "');";
                                                     try
                                                     {
                                                         connection = new NpgsqlConnection(connstring);

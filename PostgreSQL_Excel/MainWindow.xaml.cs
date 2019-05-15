@@ -9,6 +9,7 @@ using System.IO;
 using System.Data.OleDb;
 using Npgsql;
 using PostgreSQL_Excel.Models;
+using System.Collections.ObjectModel;
 
 namespace PostgreSQL_Excel
 {
@@ -27,10 +28,11 @@ namespace PostgreSQL_Excel
         private NpgsqlDataReader dataReader;
         
         private bool data_load_from_excel_file = false;
-       
-        
-      
-       
+
+        int id_to_delete;
+
+
+
         Dictionary<string, string> Item_dictionary = new Dictionary<string, string>()
         {
             { "kodi", "item_code" },
@@ -830,11 +832,11 @@ namespace PostgreSQL_Excel
 
                             }
                             break;
-                        default:
-                            {
-                                MessageBox.Show("File i Gabuar! Sigurohu qe file i zgjedhur eshte ne formatin e duhur!");
-                            }
-                            break;
+                        //default:
+                        //    {
+                        //        MessageBox.Show("Nuk mund te procedohet me kete zgjedhje. !");
+                        //    }
+                        //    break;
                     }
 
                 }
@@ -844,6 +846,148 @@ namespace PostgreSQL_Excel
                 }
             }
             else { MessageBox.Show("Asgje per tu shtuar ne Database!"); }
+        }
+
+        private void Btn_delete_selected_row_db_Click(object sender, RoutedEventArgs e)
+        {
+            if (dataGridView1.ItemsSource != null)
+            {
+                if (!data_load_from_excel_file && id_to_delete > 0)
+                {
+                    string user_select = ((ComboBoxItem)cmb_tabelat_neDB.SelectedItem).Content as string;
+
+                    switch (user_select)
+                    {
+                        case "Artikulli(Item)":
+                            {
+                                DtServer = pg_Connect.connect_database();
+                                string connstring = DtServer.dt_connection;
+                                bool conn_True = DtServer.fileExist;
+                                if (conn_True)
+                                {
+                                    string Query = "delete from public.item where item_id = '" + id_to_delete + "';";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        command = new NpgsqlCommand(Query, connection);
+                                        // NpgsqlDataReader dataReader;
+
+                                        connection.Open();
+                                        dataReader = command.ExecuteReader();
+                                        connection.Close();
+                                        MessageBox.Show("Te dhenat u fshine nga tabela Item(Artikulli) ne Database!");
+                                        //fshirja e rreshtit ne grid view pas fshirjes se tij te sukseshme ne database
+                                        var itemSource = dataGridView1.ItemsSource as DataView;
+                                        itemSource.Delete(dataGridView1.SelectedIndex);
+                                        dataGridView1.ItemsSource = itemSource;
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //  MessageBox.Show("You can't connect with database! And for this reason you can not add data to the databas.Please chek data connections saved in the file and try again");
+                                        MessageBox.Show(ex.Message);
+                                    }
+
+
+                                }
+                            }
+                            break;
+                        case "Klienti(Customer)":
+                            {
+                                DtServer = pg_Connect.connect_database();
+                                string connstring = DtServer.dt_connection;
+                                bool conn_True = DtServer.fileExist;
+                                if (conn_True)
+                                {
+                                    string Query = "delete from public.customer where customer_id = '" + id_to_delete + "';";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        command = new NpgsqlCommand(Query, connection);
+                                        // NpgsqlDataReader dataReader;
+
+                                        connection.Open();
+                                        dataReader = command.ExecuteReader();
+                                        connection.Close();
+                                        MessageBox.Show("Te dhenat u fshine nga tabela customer(Klienti) ne Database!");
+                                        //fshirja e rreshtit ne grid view pas fshirjes se tij te sukseshme ne database
+                                        var itemSource = dataGridView1.ItemsSource as DataView;
+                                        itemSource.Delete(dataGridView1.SelectedIndex);
+                                        dataGridView1.ItemsSource = itemSource;
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //  MessageBox.Show("You can't connect with database! And for this reason you can not add data to the databas.Please chek data connections saved in the file and try again");
+                                        MessageBox.Show(ex.Message);
+                                    }
+
+
+                                }
+                            }
+                            break;
+                        case "Furnizuesi(Supplier)":
+                            {
+                                DtServer = pg_Connect.connect_database();
+                                string connstring = DtServer.dt_connection;
+                                bool conn_True = DtServer.fileExist;
+                                if (conn_True)
+                                {
+                                    string Query = "delete from public.supplier where supplier_id = '" + id_to_delete + "';";
+                                    try
+                                    {
+                                        connection = new NpgsqlConnection(connstring);
+                                        command = new NpgsqlCommand(Query, connection);
+                                        // NpgsqlDataReader dataReader;
+
+                                        connection.Open();
+                                        dataReader = command.ExecuteReader();
+                                        connection.Close();
+                                        MessageBox.Show("Te dhenat u fshine nga tabela supplier(Furnizuesi) ne Database!");
+                                        //fshirja e rreshtit ne grid view pas fshirjes se tij te sukseshme ne database
+                                        var itemSource = dataGridView1.ItemsSource as DataView;
+                                        itemSource.Delete(dataGridView1.SelectedIndex);
+                                        dataGridView1.ItemsSource = itemSource;
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        //  MessageBox.Show("You can't connect with database! And for this reason you can not add data to the databas.Please chek data connections saved in the file and try again");
+                                        MessageBox.Show(ex.Message);
+                                    }
+
+
+                                }
+                            }
+                            break;
+
+                    }
+                }
+            }
+        }
+
+        private void DataGridView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {  
+            if (!data_load_from_excel_file)
+            {
+                var dg = sender as DataGrid;
+                if (dg == null) return;
+                var index = dg.SelectedIndex;
+                DataRowView row = dg.SelectedItem as DataRowView;
+                //ne rastin kur fshihet rreshti ne grid view vlera qe merr id_to_delete kalon ne exception. vlera duhet te jete me e madhe 0
+                //dhe me e vogel se gjatesia e rreshtave te gridview.
+                if (index != -1)
+                {
+                    id_to_delete = Convert.ToInt32(row.Row.ItemArray[0].ToString());
+                    //   MessageBox.Show(row.Row.ItemArray[0].ToString());
+
+                }
+            }
+        }
+
+        private void Btn_update_selected_row_db_Click(object sender, RoutedEventArgs e)
+        {
+
         }
         // kur behet nje perzgjedhje ne combobox:
         //Artikull(item),Klient(Customer),Furnitor(supplier)
@@ -871,12 +1015,12 @@ namespace PostgreSQL_Excel
         //            break;
         //        case "Klienti(Customer)":
         //            //Handle for the second combobox
-                   
+
         //           // dt_Excel = dt_Excel_temp;
         //            break;
         //        case "Furnizuesi(Supplier)":
         //            //Handle for the third combobox
-                   
+
         //           // dt_Excel = dt_Excel_temp;
         //            break;
         //    }

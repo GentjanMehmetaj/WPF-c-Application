@@ -107,7 +107,7 @@
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -241,8 +241,6 @@
 
                                         </Style>
                                     </ComboBox.Style>
-                                    <ComboBoxItem Content="0"/>
-                                    <ComboBoxItem Content="20"/>
                                 </ComboBox>
                                 <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="8" Text="Njesia" Margin="5">
                                     <TextBlock.Style>
@@ -371,14 +369,35 @@
 
                     <StackPanel Grid.Column="1">
                         <!--AlternationCount="2" AlternatingRowBackground="DodgerBlue"-->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Label  Name="lblPagingInfo" VerticalAlignment="Center" Margin="5" FontSize="13" />
+                        </StackPanel>
                         <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True" Width="auto" 
                               CanUserAddRows="False" Grid.Column="1" ColumnWidth="auto" 
                               EnableRowVirtualization="false" EnableColumnVirtualization="False" 
                               FlowDirection="LeftToRight" 
                               CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
                               SelectionMode="Single">
+                            <!--<DataGrid.Columns>
+                                <DataGridTextColumn Header="Employee ID" Width="100" Binding="{Binding emp_id}"/>
+                                <DataGridTextColumn Header="First Name" Width="100" Binding="{Binding fname}"/>
+                                <DataGridTextColumn Header="Last Name" Width="100" Binding="{Binding lname}"/>
+                                <DataGridTextColumn Header="Hire Date" Width="100" Binding="{Binding hire_date}"/>
+                            </DataGrid.Columns>-->
 
                         </DataGrid>
+                        <StackPanel  Orientation="Horizontal" Height="50" HorizontalAlignment="Center">
+                            <TextBlock FontSize="13" Text="Jepni numrin e faqes" Height="30" VerticalAlignment="Center" Margin="5" Padding="5"/>
+                            <TextBox Name="tbxPageNum" Padding="5" FontSize="13" VerticalAlignment="Center" Width="70" Height="30" />
+                            <Button Content="Shko" FontSize="13" VerticalAlignment="Center" Margin="5" Height="30" Padding="15 0" Click="btnGo_Click"/>
+                            <Button Name="btnFirst" FontSize="13" Content="&lt;&lt;" Margin="5" Height="30" Padding="15 0" VerticalAlignment="Center" Click="btnFirst_Click"/>
+                            <Button Name="btnPrev" Content="&lt;" FontSize="13" Margin="5" Height="30" Padding="15 0"  VerticalAlignment="Center" Click="btnPrev_Click"/>
+                            <Label  Name="lblPageNumber" VerticalAlignment="Center" FontSize="13" Margin="5"  Content="1"/>
+                            <Button Name="btnNext" Content="&gt;" FontSize="13" Margin="5" Height="30" Padding="15 0" VerticalAlignment="Center" Click="btnNext_Click"/>
+                            <Button Name="btnLast" Content="&gt;&gt;" FontSize="13" Margin="5"  Height="30" Padding="15 0" VerticalAlignment="Center" Click="btnLast_Click"/>
+                            
+                        </StackPanel>
+                        
 
                     </StackPanel>
 

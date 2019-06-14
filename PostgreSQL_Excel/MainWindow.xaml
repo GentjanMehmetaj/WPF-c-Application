@@ -107,7 +107,7 @@
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -372,21 +372,96 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                             <Label  Name="lblPagingInfo" VerticalAlignment="Center" Margin="5" FontSize="13" />
                         </StackPanel>
-                        <DataGrid Margin="5" Name="dataGridView1" Height="575" AutoGenerateColumns="True" Width="auto" 
-                              CanUserAddRows="False" Grid.Column="1" ColumnWidth="auto" 
+                        <DataGrid Margin="5" Name="dataGridView1"  AutoGenerateColumns="False" 
+                              CanUserAddRows="False" Grid.Column="1" ColumnWidth="*" HorizontalAlignment="Center" VerticalAlignment="Top"
                               EnableRowVirtualization="false" EnableColumnVirtualization="False" 
                               FlowDirection="LeftToRight" 
                               CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
                               SelectionMode="Single">
-                            <!--<DataGrid.Columns>
-                                <DataGridTextColumn Header="Employee ID" Width="100" Binding="{Binding emp_id}"/>
-                                <DataGridTextColumn Header="First Name" Width="100" Binding="{Binding fname}"/>
-                                <DataGridTextColumn Header="Last Name" Width="100" Binding="{Binding lname}"/>
-                                <DataGridTextColumn Header="Hire Date" Width="100" Binding="{Binding hire_date}"/>
-                            </DataGrid.Columns>-->
+                            <DataGrid.Style>
+                                <Style TargetType="DataGrid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger  Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Artikulli(Item)">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Style>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Artikull ID" Width="100" Binding="{Binding item_id}"/>
+                                <DataGridTextColumn Header="Emertim Artikulli" Width="100" Binding="{Binding name}"/>
+                                <DataGridTextColumn Header="Cmimi" Width="100" Binding="{Binding price}"/>
+                                <DataGridTextColumn Header="Me tax(1)/Pa tax(0)" Width="100" Binding="{Binding is_with_tax}"/>
+                                <DataGridTextColumn Header="TVSH" Width="100" Binding="{Binding tax_rate_id}"/>
+                                <DataGridTextColumn Header="Cmimi i Blerjes" Width="100" Binding="{Binding buying_price}"/>
+                                <DataGridTextColumn Header="Barkodi" Width="100" Binding="{Binding barcode}"/>
+                                <DataGridTextColumn Header="Kodi" Width="100" Binding="{Binding item_code}"/>
+                                <DataGridTextColumn Header="Njesia" Width="100" Binding="{Binding item_unit_id}"/>
+                            </DataGrid.Columns>
 
                         </DataGrid>
-                        <StackPanel  Orientation="Horizontal" Height="50" HorizontalAlignment="Center">
+                        <DataGrid Margin="5" Name="dataGridView2" HeadersVisibility="Column"  AutoGenerateColumns="False"  
+                              CanUserAddRows="False" Grid.Column="1" ColumnWidth="*" HorizontalAlignment="Center" VerticalAlignment="Top"
+                              EnableRowVirtualization="false" EnableColumnVirtualization="False" 
+                              FlowDirection="LeftToRight" 
+                              CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
+                              SelectionMode="Single">
+                            <DataGrid.Style>
+                                <Style TargetType="DataGrid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Klienti(Customer)">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Style>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Klient ID" Width="100" Binding="{Binding customer_id}"/>
+                                <DataGridTextColumn Header="Emertimi i Klientit" Width="100" Binding="{Binding name}"/>
+                                <DataGridTextColumn Header="Kodi" Width="100" Binding="{Binding customer_code}"/>
+                                <DataGridTextColumn Header="NIPT" Width="100" Binding="{Binding tax_id}"/>
+                                <DataGridTextColumn Header="Qyteti" Width="100" Binding="{Binding city_id}"/>
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+                        <DataGrid Margin="5" Name="dataGridView3" HeadersVisibility="Column" AutoGenerateColumns="False"  
+                              CanUserAddRows="False" Grid.Column="1" ColumnWidth="*" HorizontalAlignment="Center" VerticalAlignment="Top"
+                              EnableRowVirtualization="false" EnableColumnVirtualization="False" 
+                              FlowDirection="LeftToRight" 
+                              CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
+                              SelectionMode="Single">
+                            <DataGrid.Style>
+                                <Style TargetType="DataGrid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger  Binding="{Binding ElementName=cmb_tabelat_neDB, Path=Text}" Value="Furnizuesi(Supplier)">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Style>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Furnitor ID" Width="100" Binding="{Binding supplier_id}"/>
+                                <DataGridTextColumn Header="Emertimi i Furnitorit" Width="100" Binding="{Binding name}"/>
+                                <DataGridTextColumn Header="Kodi" Width="100" Binding="{Binding supplier_code}"/>
+                                <DataGridTextColumn Header="NIPT" Width="100" Binding="{Binding tax_id}"/>
+                                <DataGridTextColumn Header="Qyteti" Width="100" Binding="{Binding city_id}"/>
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+                        <StackPanel  Orientation="Horizontal" Height="50" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
                             <TextBlock FontSize="13" Text="Jepni numrin e faqes" Height="30" VerticalAlignment="Center" Margin="5" Padding="5"/>
                             <TextBox Name="tbxPageNum" Padding="5" FontSize="13" VerticalAlignment="Center" Width="70" Height="30" />
                             <Button Content="Shko" FontSize="13" VerticalAlignment="Center" Margin="5" Height="30" Padding="15 0" Click="btnGo_Click"/>

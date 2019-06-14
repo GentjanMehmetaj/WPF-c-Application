@@ -39,6 +39,7 @@ namespace PostgreSQL_Excel
         private int paging_PageIndex = 1;
         private int paging_NoOfRecPerPage = 28;
         private enum PagingMode { First = 1, Next = 2, Previous = 3, Last = 4,Go = 5 };
+        string tabela_neDB;
 
 
 
@@ -523,12 +524,14 @@ namespace PostgreSQL_Excel
                             if (conn_True)
                             {// do krijohet nje funksion qe do marre si paramaeter connstring dhe string qe permban te dhenat e kerkimit ne tabelen perkatese tek database
                                 string item_query = "SELECT item_id,name,price,is_with_tax,tax_rate_id,buying_price,barcode,item_code,item_unit_id from public.item";
-                                dt_Products.Clear();
-                                
-                                dataGridView1.ItemsSource = null;
-                                tbxPageNum.Clear();
+                               
+                                //dt_Products.Clear();
+                                // dataGridView1.ItemsSource = null;
+                                // tbxPageNum.Clear();
+                                clear_old_view();
+                                tabela_neDB = "item";
 
-                                ListProducts(connstring, item_query);
+                                ListProducts(connstring, item_query, tabela_neDB);
                             }
                             else
                             {
@@ -544,10 +547,13 @@ namespace PostgreSQL_Excel
                             if (conn_True)
                             {// do krijohet nje funksion qe do marre si paramaeter connstring dhe string qe permban te dhenat e kerkimit ne tabelen perkatese tek database
                                 string item_query = "SELECT customer_id,customer_code,tax_id,city_id,name from public.customer";
-                                dt_Products.Clear(); 
-                                dataGridView1.ItemsSource = null;
-                                tbxPageNum.Clear();
-                                ListProducts(connstring, item_query);
+                              
+                                //dt_Products.Clear();
+                                //dataGridView1.ItemsSource = null;
+                                //tbxPageNum.Clear();
+                                clear_old_view();
+                                tabela_neDB = "customer";
+                                ListProducts(connstring, item_query,tabela_neDB);
                                
                             }
                             else
@@ -564,10 +570,12 @@ namespace PostgreSQL_Excel
                             if (conn_True)
                             {// do krijohet nje funksion qe do marre si paramaeter connstring dhe string qe permban te dhenat e kerkimit ne tabelen perkatese tek database
                                 string item_query = "SELECT supplier_id,supplier_code,tax_id,city_id,name from public.supplier";
-                                dt_Products.Clear(); 
-                                dataGridView1.ItemsSource = null;
-                                tbxPageNum.Clear();
-                                ListProducts(connstring, item_query);
+                                //dt_Products.Clear();
+                                //dataGridView1.ItemsSource = null;
+                                //tbxPageNum.Clear();
+                                clear_old_view();
+                                tabela_neDB = "supplier";
+                                ListProducts(connstring, item_query,tabela_neDB);
 
                             }
                             else
@@ -1348,31 +1356,31 @@ namespace PostgreSQL_Excel
 
         private void btnGo_Click(object sender, RoutedEventArgs e)
         {
-            CustomPaging((int)PagingMode.Go);   
+            CustomPaging((int)PagingMode.Go, tabela_neDB);   
         }
 
         private void btnFirst_Click(object sender, RoutedEventArgs e)
         {
-            CustomPaging((int)PagingMode.First);
+            CustomPaging((int)PagingMode.First, tabela_neDB);
         }
         
       
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
-            CustomPaging((int)PagingMode.Next);
+            CustomPaging((int)PagingMode.Next, tabela_neDB);
         }
 
         private void btnPrev_Click(object sender, RoutedEventArgs e)
         {
-            CustomPaging((int)PagingMode.Previous);
+            CustomPaging((int)PagingMode.Previous, tabela_neDB);
         }
 
         private void btnLast_Click(object sender, RoutedEventArgs e)
         {
-            CustomPaging((int)PagingMode.Last);
+            CustomPaging((int)PagingMode.Last,tabela_neDB);
         }
         //shaqja e faqes ne gridview sipas kerkeses se user-it
-        private void CustomPaging(int mode)
+        private void CustomPaging(int mode ,string tab_zgjedhur)
         {
             //There is no need for these variables but i created them just for readability
             int totalRecords = dt_Products.Rows.Count;
@@ -1409,8 +1417,19 @@ namespace PostgreSQL_Excel
                         }
 
                         paging_PageIndex += 1;
-
-                        dataGridView1.ItemsSource = tmpTable.DefaultView;
+                        switch (tab_zgjedhur)
+                        {
+                            case "item":
+                                dataGridView1.ItemsSource = tmpTable.DefaultView;
+                                break;
+                            case "customer":
+                                dataGridView2.ItemsSource = tmpTable.DefaultView;
+                                break;
+                            case "supplier":
+                                dataGridView3.ItemsSource = tmpTable.DefaultView;
+                                break;
+                        }
+                      //  dataGridView1.ItemsSource = tmpTable.DefaultView;
                         tmpTable.Dispose();
                     }
                     break;
@@ -1427,18 +1446,29 @@ namespace PostgreSQL_Excel
                         {
                             tmpTable.ImportRow(dt_Products.Rows[i]);
                         }
-
-                        dataGridView1.ItemsSource = tmpTable.DefaultView;
+                        switch (tab_zgjedhur)
+                        {
+                            case "item":
+                                dataGridView1.ItemsSource = tmpTable.DefaultView;
+                                break;
+                            case "customer":
+                                dataGridView2.ItemsSource = tmpTable.DefaultView;
+                                break;
+                            case "supplier":
+                                dataGridView3.ItemsSource = tmpTable.DefaultView;
+                                break;
+                        }
+                       // dataGridView1.ItemsSource = tmpTable.DefaultView;
                         tmpTable.Dispose();
                     }
                     break;
                 case (int)PagingMode.First:
                     paging_PageIndex = 2;
-                    CustomPaging((int)PagingMode.Previous);
+                    CustomPaging((int)PagingMode.Previous,tabela_neDB);
                     break;
                 case (int)PagingMode.Last:
                     paging_PageIndex = (totalRecords / pageSize);
-                    CustomPaging((int)PagingMode.Next);
+                    CustomPaging((int)PagingMode.Next,tabela_neDB);
                     break;
                 case (int)PagingMode.Go:
                     int pageGoNum=0;
@@ -1458,7 +1488,7 @@ namespace PostgreSQL_Excel
                         if (pageNum >= 1 && pageNum <= nr_of_pages)
                         {
                             paging_PageIndex = pageNum-1;
-                            CustomPaging((int)PagingMode.Next);
+                            CustomPaging((int)PagingMode.Next,tabela_neDB);
                         }
                     }
                         break;
@@ -1494,7 +1524,7 @@ namespace PostgreSQL_Excel
             
         }
         //funksion per nxjerrjen e te dhenave nga tabela perkatese ne data base
-        private void ListProducts( string db_connection_data,string db_query)
+        private void ListProducts( string db_connection_data,string db_query ,string tabela_ne_db)
         {
             NpgsqlCommand cmd = new NpgsqlCommand();
             NpgsqlConnection conn = new NpgsqlConnection();
@@ -1535,9 +1565,20 @@ namespace PostgreSQL_Excel
                     }
 
                     //Bind the table to the gridview.
-                    dataGridView1.ItemsSource = tmpTable.DefaultView;
-                    DisplayPagingInfo();
+                    switch (tabela_ne_db)
+                    {
+                        case "item":
+                            dataGridView1.ItemsSource = tmpTable.DefaultView;
+                            break;
+                        case "customer":
+                            dataGridView2.ItemsSource = tmpTable.DefaultView;
+                            break;
+                        case "supplier":
+                            dataGridView3.ItemsSource = tmpTable.DefaultView; 
+                            break;
+                    }
 
+                    DisplayPagingInfo();
                     //Dispose the temporary table.
                     tmpTable.Dispose();
                 }
@@ -1557,6 +1598,15 @@ namespace PostgreSQL_Excel
                 conn.Dispose();
                 
             }
+        }
+        private void clear_old_view()
+        {
+            dt_Products.Clear();
+            dataGridView1.ItemsSource = null;
+            dataGridView2.ItemsSource = null;
+            dataGridView3.ItemsSource = null;
+            tbxPageNum.Clear();
+            lblPagingInfo.Content="";
         }
 
         // kur behet nje perzgjedhje ne combobox:

@@ -107,7 +107,7 @@
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=cmb_tabelat_neDB, Path=SelectedItem}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -376,7 +376,7 @@
                               CanUserAddRows="False" Grid.Column="1" ColumnWidth="*" HorizontalAlignment="Center" VerticalAlignment="Top"
                               EnableRowVirtualization="false" EnableColumnVirtualization="False" 
                               FlowDirection="LeftToRight" 
-                              CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
+                              CanUserReorderColumns="False" SelectionUnit="CellOrRowHeader" SelectionChanged="DataGridView1_SelectionChanged"
                               SelectionMode="Single">
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
@@ -397,7 +397,74 @@
                                 <DataGridTextColumn Header="Cmimi i Blerjes" Width="100" Binding="{Binding buying_price}"/>
                                 <DataGridTextColumn Header="Barkodi" Width="100" Binding="{Binding barcode}"/>
                                 <DataGridTextColumn Header="Kodi" Width="100" Binding="{Binding item_code}"/>
-                                <DataGridTextColumn Header="Njesia" Width="100" Binding="{Binding item_unit_id}"/>
+                                <!--<DataGridTextColumn Header="Njesia" Width="100" Binding="{Binding item_unit_id}"/>-->
+                                <!--<DataGridTemplateColumn Header="Njesia" Width="100">
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <ComboBox x:Name="cmb_item_njesi" SelectedValuePath="item_unit_id"  ItemsSource="{Binding}"
+                                                      DisplayMemberPath="name"   SelectedValue="name">
+                                                
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                               </DataGridTemplateColumn>-->
+                                <DataGridComboBoxColumn x:Name="cmb_item_njesi"
+                                   Header="Njesia" 
+                                   ItemsSource="{Binding}"
+                                   SelectedValueBinding="{Binding item_unit_id}"
+                                   SelectedValuePath="item_unit_id"
+                                   DisplayMemberPath="name">
+                                    
+                                </DataGridComboBoxColumn >
+                                <!--<DataGridTemplateColumn Header="Njesia">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox   IsEditable="True" Text="{Binding name}" ItemsSource="{Binding }" SelectedValue="{Binding item_unit_id }"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>-->
+
+                                <!--<DataGridTemplateColumn Header="Njesia" MinWidth="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding name}"></TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding}"  
+                                                   DisplayMemberPath="name" SelectedItem="{Binding item_unit_id , Mode=TwoWay, 
+                                                   Source={StaticResource name}}"></ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                </DataGridTemplateColumn>-->
+
+                                <!--<DataGridTemplateColumn Header="Njesia" Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding name}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Height="22" SelectedItem="{Binding name}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+                                    
+                                </DataGridTemplateColumn>-->
+                                <!--<DataGridComboBoxColumn Header="Njesia" x:Name="cmb_column_njesia" SelectedValueBinding="{Binding name}"/>
+                                <DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="ItemsSource" Value="{Binding item_unit}"/>
+                                        <Setter Property="IsReadOnly" Value="True"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="ItemsSource" Value="{Binding LifeAreaList}"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>-->
+
                             </DataGrid.Columns>
 
                         </DataGrid>
@@ -405,7 +472,7 @@
                               CanUserAddRows="False" Grid.Column="1" ColumnWidth="*" HorizontalAlignment="Center" VerticalAlignment="Top"
                               EnableRowVirtualization="false" EnableColumnVirtualization="False" 
                               FlowDirection="LeftToRight" 
-                              CanUserReorderColumns="False" SelectionUnit="FullRow" SelectionChanged="DataGridView1_SelectionChanged"
+                              CanUserReorderColumns="False" SelectionUnit="FullRow" CellEditEnding="DataGridView2_CellEditEnding"
                               SelectionMode="Single">
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">

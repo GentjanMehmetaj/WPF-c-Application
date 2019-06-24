@@ -10,6 +10,7 @@ using System.Data.OleDb;
 using Npgsql;
 using PostgreSQL_Excel.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace PostgreSQL_Excel
 {
@@ -36,10 +37,13 @@ namespace PostgreSQL_Excel
         int qytet_selectuar = -1;
         //varialblaglobal qe do perdoren per pagination te te dhenave te nxjerra nga databasa
         DataTable dt_Products = new DataTable();
+        DataTable dt_njesi = new DataTable();
         private int paging_PageIndex = 1;
         private int paging_NoOfRecPerPage = 28;
         private enum PagingMode { First = 1, Next = 2, Previous = 3, Last = 4,Go = 5 };
         string tabela_neDB;
+        List<string> cmb_column_item = new List<string>();
+
 
 
 
@@ -261,7 +265,10 @@ namespace PostgreSQL_Excel
                     while (dr.Read())
                     {
                         string name = dr.GetString(0);
+                        //list
+                        //cmb_column_item.Add(name);
                         cmb_njesi.Items.Add(name);
+                        
                     }
                     connection.Close();
 
@@ -275,6 +282,8 @@ namespace PostgreSQL_Excel
             }
 
         }
+        
+
         void fill_cmb_tvsh()
         {
             DtServer = pg_Connect.connect_database();
@@ -524,14 +533,14 @@ namespace PostgreSQL_Excel
                             if (conn_True)
                             {// do krijohet nje funksion qe do marre si paramaeter connstring dhe string qe permban te dhenat e kerkimit ne tabelen perkatese tek database
                                 string item_query = "SELECT item_id,name,price,is_with_tax,tax_rate_id,buying_price,barcode,item_code,item_unit_id from public.item";
-                               
-                                //dt_Products.Clear();
+                                //string item_query = "SELECT item_id,name,price,is_with_tax,tax_rate_id,buying_price,barcode,item_code from public.item";
+                                // dt_Products.Clear();
                                 // dataGridView1.ItemsSource = null;
                                 // tbxPageNum.Clear();
                                 clear_old_view();
                                 tabela_neDB = "item";
 
-                                ListProducts(connstring, item_query, tabela_neDB);
+                                ListProducts(connstring, item_query, tabela_neDB); 
                             }
                             else
                             {
@@ -554,7 +563,7 @@ namespace PostgreSQL_Excel
                                 clear_old_view();
                                 tabela_neDB = "customer";
                                 ListProducts(connstring, item_query,tabela_neDB);
-                               
+
                             }
                             else
                             {
@@ -576,6 +585,7 @@ namespace PostgreSQL_Excel
                                 clear_old_view();
                                 tabela_neDB = "supplier";
                                 ListProducts(connstring, item_query,tabela_neDB);
+                               
 
                             }
                             else
@@ -1074,17 +1084,18 @@ namespace PostgreSQL_Excel
             }
         }
 
+
         private void DataGridView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!data_load_from_excel_file)
             {//ne menyre qe mos te ndryshohen nga perdoruesi te  dhenat e nxjerra nga data base dhe te krijojne problemine manupulimin e te 
                 //dhenave te saj behet read only. keshtu qe ato mund te ndryshohen vetem me nje nderveprim te sakte nga useri(delete or update etj.)
-                dataGridView1.IsReadOnly = true;
+                //dataGridView1.IsReadOnly = true;
                 var dg = sender as DataGrid;
                 if (dg == null) return;
                 var index = dg.SelectedIndex;
                 DataRowView row = dg.SelectedItem as DataRowView;
-               
+
                 //ne rastin kur fshihet rreshti ne grid view vlera qe merr id_of_selected_row kalon ne exception. vlera duhet te jete me e madhe 0
                 //dhe me e vogel se gjatesia e rreshtave te gridview.
                 if (index != -1)
@@ -1094,29 +1105,30 @@ namespace PostgreSQL_Excel
                     switch (user_select)
                     {
                         case "Artikulli(Item)":
-                                txt_kodi.Text = row[Item_dictionary["kodi"]].ToString();
-                                txt_artikulli.Text = row[Item_dictionary["artikulli"]].ToString();
-                                txt_barkodi.Text = row[Item_dictionary["barkodi"]].ToString();
-                                txt_cmimi.Text = row[Item_dictionary["cmimi"]].ToString();
+                            txt_kodi.Text = row[Item_dictionary["kodi"]].ToString();
+                            txt_artikulli.Text = row[Item_dictionary["artikulli"]].ToString();
+                            txt_barkodi.Text = row[Item_dictionary["barkodi"]].ToString();
+                            txt_cmimi.Text = row[Item_dictionary["cmimi"]].ToString();
 
                             //kontrolli nese njesesia eshte bosh. nese permban dicka ajo do jete nje vlere e futur
                             // sipas rregullit dmthsipas tabeles item_unit ne database.normalisht mund tehiqet si kusht. thjeshte per siguri
                             if (row[Item_dictionary["njesi"]].ToString() != "")
-                                {
+                            {
                                 njesia_selectuar = Convert.ToInt32(row[Item_dictionary["njesi"]]);
-                                    select_cmb_njesi(njesia_selectuar);
-                                    // cmb_njesi.SelectedItem= row[Item_dictionary["njesi"]];
-                                }
+                                select_cmb_njesi(njesia_selectuar);
+                                cmb_njesi.SelectedItem = row[Item_dictionary["njesi"]];
+                            }
+
                             //kontrolli nese tvsh eshte bosh. nese permban dicka ajo do jete nje vlere e futur
                             // sipas rregullit dmth sipas tabeles tax_rate ne database.normalisht mund tehiqet si kusht. thjeshte per siguri
                             if (row[Item_dictionary["tvsh"]].ToString() != "")
-                                {
+                            {
                                 tvsh_selectuar = Convert.ToInt32(row[Item_dictionary["tvsh"]]);
-                                    select_cmb_tvsh(tvsh_selectuar);
-                                }
+                                select_cmb_tvsh(tvsh_selectuar);
+                            }
                             break;
                         case "Klienti(Customer)":
-                           
+
                             txt_kodi.Text = row[customer_dictionary["Kodi"]].ToString();
                             txt_artikulli.Text = row[customer_dictionary["Pershkrim"]].ToString();
                             txt_barkodi.Text = row[customer_dictionary["NIPT"]].ToString();
@@ -1142,12 +1154,12 @@ namespace PostgreSQL_Excel
                             }
 
                             break;
-                        default :
+                        default:
                             MessageBox.Show("Zgjedhje e panjohur");
                             break;
 
                     }
-                    
+
                 }
             }
            
@@ -1543,12 +1555,12 @@ namespace PostgreSQL_Excel
                 {
                     DataTable tmpTable = new DataTable();
 
-                    //Copying the schema to the temporary table.
+                    //kopjojme skemen e dt_products ne temporary table.
                     tmpTable = dt_Products.Clone();
-
-                    //If total record count is greater than page size then
-                    //import records from 0 to pagesize (here 20)
-                    //Else import reports from 0 to total record count.
+                    //nese numri total i recordeve eshte me i madh se numri i recordeve per nje faqe(aq sa e kemi percaktuar ne fillim 20 ne kete rast)
+                    //atehere behet importi i recordeve nga 0 deri tek numri i rekordeve per nje faqe(paging_NoOfRecPerPage)
+                    //perndryshe importo records nga 0 deri tek numri total i recordeve.
+                   
                     if (dt_Products.Rows.Count >= paging_NoOfRecPerPage)
                     {
                         for (int i = 0; i < paging_NoOfRecPerPage; i++)
@@ -1569,6 +1581,29 @@ namespace PostgreSQL_Excel
                     {
                         case "item":
                             dataGridView1.ItemsSource = tmpTable.DefaultView;
+                          //duhet bere nje funksion me keto tedhena me poshtene menyre qe te mbushet combobox
+                            NpgsqlCommand cmd1 = new NpgsqlCommand();
+                            NpgsqlConnection conn1 = new NpgsqlConnection();
+                            conn1 = new NpgsqlConnection(db_connection_data);
+                            cmd1 = new NpgsqlCommand("SELECT * from public.item_unit", conn1);
+                            // command = new NpgsqlCommand("SELECT * from public.item", connection);
+                            NpgsqlDataAdapter NpgsqlDA1 = new NpgsqlDataAdapter();
+                            NpgsqlDA1.SelectCommand = cmd1;
+                            try
+                            {
+
+                               
+                                NpgsqlDA1.Fill(dt_njesi);
+                                
+
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            cmb_item_njesi.ItemsSource = dt_njesi.DefaultView;
+                          
+                           
                             break;
                         case "customer":
                             dataGridView2.ItemsSource = tmpTable.DefaultView;
@@ -1607,6 +1642,34 @@ namespace PostgreSQL_Excel
             dataGridView3.ItemsSource = null;
             tbxPageNum.Clear();
             lblPagingInfo.Content="";
+        }
+
+        private void DataGridView2_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Commit)
+            { 
+                var dg = sender as DataGrid;
+                if (dg == null) return;
+              
+                DataRowView row = dg.SelectedItem as DataRowView;
+
+                
+                    id_of_selected_row = Convert.ToInt32(row.Row.ItemArray[0].ToString());
+                 
+                    var column = e.Column as DataGridBoundColumn;
+                    if (column != null)
+                    {
+                        var bindingPath = (column.Binding as Binding).Path.Path;
+
+                        int rowIndex = e.Row.GetIndex();
+                        var el = e.EditingElement as TextBox;
+                        // rowIndex has the row index
+                        // bindingPath has the column's binding
+                        // el.Text has the new, user-entered value
+
+                    }
+              
+            }
         }
 
         // kur behet nje perzgjedhje ne combobox:
